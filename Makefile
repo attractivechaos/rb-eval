@@ -2,10 +2,10 @@ CC=			gcc
 CXX=		g++
 CFLAGS=		-g -Wall -Wc++-compat -O2
 CXXFLAGS=	$(CFLAGS)
-EXE=		rb-cpp rb-c rb-c-mp
+EXE=		rb-cpp rb-c rb-c-mp btree-c
 
-.SUFFIXES:.c .o
-.PHONY:all demo clean depend
+.SUFFIXES:.c .cpp .o
+.PHONY:all clean depend
 
 .c.o:
 		$(CC) -c $(CFLAGS) $< -o $@
@@ -19,6 +19,9 @@ rb-c:rb.o rb-c.o
 		$(CC) $(CFLAGS) $^ -o $@
 
 rb-c-mp:rb.o rb-c-mp.o
+		$(CC) $(CFLAGS) $^ -o $@
+
+btree-c:btree-c.o
 		$(CC) $(CFLAGS) $^ -o $@
 
 rb-cpp:rb-cpp.o
