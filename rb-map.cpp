@@ -1,7 +1,8 @@
 #include <stdint.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "rb.hpp"
+#include <map>
 
 static inline uint64_t kad_splitmix64(uint64_t x)
 {
@@ -11,35 +12,21 @@ static inline uint64_t kad_splitmix64(uint64_t x)
 	return z ^ (z >> 31);
 }
 
-struct int_cmp {
-	inline int operator () (unsigned a, unsigned b) {
-		return (a > b) - (a < b);
-	}
-};
-
-typedef rbmap_t<unsigned, int, int_cmp> intmap_t;
+typedef std::map<unsigned, int> intmap_t;
 
 int test_int(int n)
 {
-	int i, present, cnt = 0;
+	int i, cnt = 0;
 	uint64_t x = 11;
-	intmap_t::node_t *p;
 	intmap_t *h = new intmap_t;
 
 	for (i = 0; i < n; ++i) {
 		unsigned y = x % (n>>1);
 		x = kad_splitmix64(x);
-		p = h->find(y);
-		if (p == 0) {
-			p = h->insert(y, &present);
-			p->value = i;
-			++cnt;
-		} else {
-			p = h->erase(y);
-			free(p);
-			--cnt;
-		}
+		std::pair<intmap_t::iterator, bool> p = h->insert(std::pair<unsigned, int>(y, i));
+		if (p.second == false) h->erase(p.first);
 	}
+	cnt = h->size();
 	delete h;
 	return cnt;
 }

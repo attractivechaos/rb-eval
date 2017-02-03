@@ -2,7 +2,7 @@ CC=			gcc
 CXX=		g++
 CFLAGS=		-g -Wall -Wc++-compat -O2
 CXXFLAGS=	$(CFLAGS)
-EXE=		rb-cpp rb-c rb-c-mp btree-c
+EXE=		rb-c rb-c-mp btree-c rb-cpp rb-map
 
 .SUFFIXES:.c .cpp .o
 .PHONY:all clean depend
@@ -16,16 +16,19 @@ EXE=		rb-cpp rb-c rb-c-mp btree-c
 all:$(EXE)
 
 rb-c:rb.o rb-c.o
-		$(CC) $(CFLAGS) $^ -o $@
+		$(CC) $^ -o $@
 
 rb-c-mp:rb.o rb-c-mp.o
-		$(CC) $(CFLAGS) $^ -o $@
+		$(CC) $^ -o $@
 
 btree-c:btree-c.o
-		$(CC) $(CFLAGS) $^ -o $@
+		$(CC) $^ -o $@
 
 rb-cpp:rb-cpp.o
-		$(CXX) $(CFLAGS) $^ -o $@
+		$(CXX) $^ -o $@
+
+rb-map:rb-map.o
+		$(CXX) $^ -o $@
 
 clean:
 		rm -fr *.o a.out $(EXE) *~ *.a *.dSYM session*
@@ -35,6 +38,7 @@ depend:
 
 # DO NOT DELETE
 
+btree-c.o: kbtree.h
 rb-c-mp.o: rb.h klist.h
 rb-c.o: rb.h
 rb.o: rb.h
